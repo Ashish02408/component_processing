@@ -18,18 +18,18 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - echo Building Docker image
-      - mvn spring-boot:build-image
-      - docker tag $APPLICATION_NAME:$APPLICATION_VERSION $REPOSITORY_URI:latest
+      - echo $IMAGE_NAME
+      - mvn clean package -Ddockerfile.skip
+      - docker build -t $IMAGE_NAME
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Created docker images...
-      - docker images
+      - echo $(docker images)
+      - docker tag $IMAGE_NAME $IMAGE_URI
       - echo Pushing the Docker images...
-      - docker push $REPOSITORY_URI:latest
-      - echo Writing image definitions file...
-      - printf '[{"name":"ritam_component_processing_container","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+      - docker push $IMAGE_URI
+      - echo push completed
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $IMAGE_URI > imagedefinitions.json
       - cat imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
