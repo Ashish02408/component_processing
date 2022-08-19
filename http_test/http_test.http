@@ -1,0 +1,68 @@
+### Get process detail
+POST http://localhost:8081/component-processing/api/process-detail
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Miss Mahanty",
+  "contactNumber": "7980546384",
+  "componentType": "integral-item",
+  "componentName": "lipstick",
+  "quantity": 5
+}
+
+### Get process detail with errors
+GET http://localhost:8081/component-processing/api/process-detail
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "",
+  "contactNumber": "798054638",
+  "componentType": "",
+  "componentName": "",
+  "quantity": 0
+}
+
+
+### Payment processing
+GET http://localhost:8081/component-processing/api/complete-processing?requestId=c4219465-46e9-4ac6-9390-2bc3f4844478&creditCardNumber=1234123134123412&creditLimit=851&processingCharge=850
+
+
+### Payment processing with missing request param
+GET http://localhost:8081/component-processing/api/complete-processing?requestId=abcd&creditCardNumber=1234&creditLimit=12345
+
+
+### Place order
+POST http://localhost:8081/component-processing/api/place-order
+x-auth-customer-email: ashish@gmail.com
+Content-Type: application/json
+Accept: application/json
+
+{
+  "processRequest": {
+    "name": "Miss Mahanty",
+    "contactNumber": "7980546384",
+    "componentType": "integral-item",
+    "componentName": "lipstick",
+    "quantity": 5
+  },
+  "processResponse": {
+    "requestId": "eda98175-ef1b-4403-89c2-8acf0810d40b",
+    "processingCharge": 500,
+    "packagingAndDeliveryCharge": 1750,
+    "dateOfDelivery": "2022-05-17"
+  }
+}
+
+
+### Get all orders
+GET http://localhost:8081/component-processing/api/order-details
+x-auth-customer-email: ashish@gmail.com
+Accept: application/json
+
+
+### Get single order
+GET http://localhost:8081/component-processing/api/order-details?orderId=1
+x-auth-customer-email: ashish@gmail.com
+Accept: application/json
