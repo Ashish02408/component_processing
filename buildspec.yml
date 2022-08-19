@@ -20,14 +20,14 @@ phases:
       - echo Build started on `date`
       - echo $IMAGE_NAME
       - mvn clean package -Ddockerfile.skip
-      - docker build -t $IMAGE_NAME
+      - docker tag $APPLICATION_NAME:$APPLICATION_VERSION $REPOSITORY_URI:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo $(docker images)
-      - docker tag $IMAGE_NAME $IMAGE_URI
+      - docker images
       - echo Pushing the Docker images...
-      - docker push $IMAGE_URI
+      - docker push $REPOSITORY_URI:latest
       - echo push completed
       - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $IMAGE_URI > imagedefinitions.json
       - cat imagedefinitions.json
