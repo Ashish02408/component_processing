@@ -18,17 +18,16 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building Docker image
-      - mvn spring-boot:build-image
-      - docker tag $APPLICATION_NAME:$APPLICATION_VERSION $REPOSITORY_URI:latest
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Created docker images...
-      - docker images
       - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      - printf '[{"name":"component_processing","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+      - printf '[{"name":"%s","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
       - cat imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
