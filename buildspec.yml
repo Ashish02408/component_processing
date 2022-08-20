@@ -14,7 +14,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...          
-      - docker build -t component_processing_docker.jar:latest 
+      - docker build -t component_processing_docker.jar:latest . 
       - docker tag component_processing_docker.jar:latest 860061945305.dkr.ecr.ap-south-1.amazonaws.com/component_processing_docker.jar:latest
   post_build:
     commands:
