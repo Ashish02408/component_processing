@@ -8,19 +8,25 @@ phases:
      
   pre_build:
     commands:
-     - echo Logging in to Amazon ECR...
-     - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 860061945305.dkr.ecr.ap-south-1.amazonaws.com
+      - mvn clean install
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_REGION)
+      - APPLICATION_NAME=component_processing
+      - APPLICATION_VERSION=1.0
+      - REPOSITORY_URI=860061945305.dkr.ecr.ap-south-1.amazonaws.com/component_processing
   build:
     commands:
       - echo Build started on `date`
-      - echo Building the Docker image...          
-      - docker build -t component_processing_docker.jar:latest . 
-      - docker tag component_processing_docker.jar:latest 860061945305.dkr.ecr.ap-south-1.amazonaws.com/component_processing_docker.jar:latest
+      - echo Building Docker image
+      - mvn spring-boot:build-image
+      - docker tag $APPLICATION_NAME:$APPLICATION_VERSION $REPOSITORY_URI:latest
   post_build:
     commands:
       - echo Build completed on `date`
+      - echo Created docker images...
+      - docker images
       - echo Pushing the Docker images...
-      - docker push 860061945305.dkr.ecr.ap-south-1.amazonaws.com/component_processing_docker.jar:latest
+      - docker push $REPOSITORY_URI:latest
       - echo Writing image definitions file...
       - printf '[{"name":"component_processing","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
       - cat imagedefinitions.json
